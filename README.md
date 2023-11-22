@@ -1,6 +1,5 @@
-# java-new-features-demos
+# What's new in Java?
 
-This repository contains examples of new features in new Java releases after Java 6.
+This repository showcases examples of new features introduced in Java releases subsequent to Java 6.
 
-New examples will be added with future Java releases. Also, if required, current examples will be corrected and new ones
-will be added.
+Additional examples will be incorporated with future Java releases. Moreover, existing examples will be refined and supplemented as needed.
