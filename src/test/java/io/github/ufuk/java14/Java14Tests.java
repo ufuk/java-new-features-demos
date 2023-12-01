@@ -4,6 +4,7 @@ import io.github.ufuk.java14.examples.MyImmutableDataModel;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Further readings:
@@ -37,7 +38,14 @@ class Java14Tests {
     void what_exactly_was_null() {
         var data = new MyImmutableDataModel("13", null);
 
-        System.out.println(data.name().length()); // java.lang.NullPointerException: Cannot invoke "String.length()" because the return value of "io.github.ufuk.java14.examples.MyImmutableDataModel.name()" is null
+        NullPointerException e = assertThrows(
+                NullPointerException.class,
+                () -> {
+                    System.out.println(data.name().length()); // throws exception
+                }
+        );
+
+        assertThat(e).hasMessage("Cannot invoke \"String.length()\" because the return value of \"io.github.ufuk.java14.examples.MyImmutableDataModel.name()\" is null");
     }
 
 }

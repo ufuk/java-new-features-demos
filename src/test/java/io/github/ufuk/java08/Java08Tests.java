@@ -17,6 +17,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 /**
  * Further readings:
  * - https://www.baeldung.com/java-8-new-features
@@ -144,14 +147,21 @@ class Java08Tests {
     void optional_flat_map() {
         Optional<String> anOptionalString = Optional.of("a text");
         Optional<Long> anOptionalLong = anOptionalString.flatMap(aString -> StringUtils.isNumeric(aString) ? Optional.ofNullable(Long.parseLong(aString)) : Optional.empty());
-        System.out.println(anOptionalLong.get());
+        assertThat(anOptionalLong).isEmpty();
     }
 
     @Test
     void optional_or_else_throw() {
         Optional<String> anOptionalString = Optional.empty();
-        String aString = anOptionalString.orElseThrow(RuntimeException::new);
-        System.out.println(aString);
+
+        RuntimeException e = assertThrows(
+                RuntimeException.class,
+                () -> {
+                    anOptionalString.orElseThrow(() -> new RuntimeException("No value presents, then throw...")); // throws exception
+                }
+        );
+
+        assertThat(e).hasMessage("No value presents, then throw...");
     }
 
     @Test

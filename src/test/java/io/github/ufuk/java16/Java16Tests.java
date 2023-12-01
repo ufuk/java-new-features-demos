@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 /**
  * Further readings:
  * - https://www.baeldung.com/java-16-new-features
@@ -22,7 +24,13 @@ class Java16Tests {
         List<String> anImmutableList = aModifiableList.stream()
                 .filter(StringUtils::isNumeric)
                 .toList(); // it was like ".collect(Collectors.toUnmodifiableList());" before
-        anImmutableList.add("4"); // throws error
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> {
+                    anImmutableList.add("4"); // throws exception
+                }
+        );
     }
 
     // TODO: add more examples on records with its final-release features

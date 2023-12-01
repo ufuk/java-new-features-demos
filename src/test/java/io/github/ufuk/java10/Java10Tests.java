@@ -3,11 +3,10 @@ package io.github.ufuk.java10;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Further readings:
@@ -38,7 +37,13 @@ class Java10Tests {
         aModifiableList.add("3");
 
         List<String> anImmutableList = List.copyOf(aModifiableList);
-        anImmutableList.add("4"); // throws error
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> {
+                    anImmutableList.add("4"); // throws exception
+                }
+        );
     }
 
     @Test
@@ -51,16 +56,27 @@ class Java10Tests {
         List<String> anImmutableList = aModifiableList.stream()
                 .filter(StringUtils::isNumeric)
                 .collect(Collectors.toUnmodifiableList());
-        anImmutableList.add("4"); // throws error
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> {
+                    anImmutableList.add("4"); // throws exception
+                }
+        );
     }
 
     @Test
     void optional_or_else_throw_no_such_element_exception_easily() {
         Optional<String> anOptionalString = Optional.of("text");
 
-        Long convertedValue = anOptionalString.filter(StringUtils::isNumeric)
-                .map(Long::parseLong)
-                .orElseThrow();
+        assertThrows(
+                NoSuchElementException.class,
+                () -> {
+                    Long convertedValue = anOptionalString.filter(StringUtils::isNumeric)
+                            .map(Long::parseLong)
+                            .orElseThrow(); // throws exception
+                }
+        );
     }
 
 }

@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 /**
  * Further readings:
  * - https://www.baeldung.com/new-java-9
@@ -23,12 +26,18 @@ class Java09Tests {
     void optional_if_present_or_else() {
         Optional<Object> anEmptyOptional = Optional.empty();
 
-        anEmptyOptional.ifPresentOrElse(
-                System.out::println,
+        RuntimeException e = assertThrows(
+                RuntimeException.class,
                 () -> {
-                    throw new RuntimeException("Expected, but no value presents");
+                    anEmptyOptional.ifPresentOrElse(
+                            System.out::println, () -> {
+                                throw new RuntimeException("Expected, but no value presents"); // throws exception
+                            }
+                    );
                 }
         );
+
+        assertThat(e).hasMessage("Expected, but no value presents");
     }
 
     @Test
