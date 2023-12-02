@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Further readings:
  * - https://www.oracle.com/java/technologies/javase/20-relnote-issues.html
+ * - https://www.happycoders.eu/java/java-20-features/
  */
 class Java20Tests {
 

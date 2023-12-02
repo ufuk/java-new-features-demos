@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Further readings:
  * - https://www.oracle.com/java/technologies/javase/18-relnote-issues.html
  * - https://openjdk.org/jeps/408
+ * - https://www.happycoders.eu/java/java-18-features/
  */
 class Java18Tests {
 

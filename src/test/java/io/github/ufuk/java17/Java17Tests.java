@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class Java17Tests {
 
     @Test
-    void pattern_matching_for_switch() { // preview in Java 17, released in Java ?
+    void pattern_matching_for_switch() { // preview in Java 17, released in Java 21
         Object animal = new Cat("Sıdıka");
 
         String name = switch (animal) {

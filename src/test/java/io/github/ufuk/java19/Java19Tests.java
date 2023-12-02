@@ -14,11 +14,12 @@ import java.util.concurrent.TimeUnit;
  * - https://www.oracle.com/java/technologies/javase/19-relnote-issues.html
  * - https://www.baeldung.com/java-19-record-patterns
  * - https://www.infoworld.com/article/3653331/jdk-19-the-new-features-in-java-19.html
+ * - https://www.happycoders.eu/java/java-19-features/
  */
 class Java19Tests {
 
     @Test
-    void condition_with_the_when_keyword_using_pattern_matching_for_switch() { // preview in Java 17, still preview in Java 19, released in Java ?
+    void condition_with_the_when_keyword_using_pattern_matching_for_switch() { // preview in Java 17, still preview in Java 19, released in Java 21
         Object animal = new Cat("Sıdıka");
 
         String name = switch (animal) {
@@ -32,7 +33,7 @@ class Java19Tests {
     }
 
     @Test
-    void using_instanceof_and_record_paterns() { // preview in 19, released in Java ?
+    void using_instanceof_and_record_paterns() { // preview in 19, released in Java 21
         Object animal = new Cat("Sıdıka");
 
         if (animal instanceof Cat(String name)) {
@@ -41,7 +42,7 @@ class Java19Tests {
     }
 
     @Test
-    void using_switch_and_record_paterns() { // preview in 19, released in Java ?
+    void using_switch_and_record_paterns() { // preview in 19, released in Java 21
         Object animal = new Cat("Sıdıka");
 
         switch (animal) {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Further readings:
  * - https://www.oracle.com/java/technologies/javase/21-relnote-issues.html
+ * - https://www.happycoders.eu/java/java-21-features/
  */
 class Java21Tests {
 
