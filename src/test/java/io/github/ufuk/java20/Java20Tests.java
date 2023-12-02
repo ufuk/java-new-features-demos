@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Further readings:
- * - ...
+ * - https://www.oracle.com/java/technologies/javase/20-relnote-issues.html
  */
 class Java20Tests {
 

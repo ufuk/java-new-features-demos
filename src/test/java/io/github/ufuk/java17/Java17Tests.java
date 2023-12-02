@@ -15,8 +15,9 @@ class Java17Tests {
         Object animal = new Cat("Sıdıka");
 
         String name = switch (animal) {
-            case Cat c -> c.name();
-            case Dog d -> d.name();
+            // case Cat c && c.name().endsWith("a") -> c.name() + "*";
+            case Cat c -> c.name() + " the cat";
+            case Dog d -> d.name() + " the dog";
             default -> "unidentified animal";
         };
 
