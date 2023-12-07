@@ -108,6 +108,17 @@ class Java21Tests {
         assertThat(sequencedMap.sequencedEntrySet()).hasSize(1).containsSequence(Map.entry("one", 1));
     }
 
+    static Stream<Arguments> provideSequencedMaps() {
+        return Stream.of(
+                Arguments.of(new LinkedHashMap<>(Map.of("one", 1)))
+                /*
+                These are also SequencedMap, but they do not support first/last entry modification
+                // Arguments.of(new ConcurrentSkipListMap<>(Map.of("one", 1))),
+                // Arguments.of(new TreeMap<>(Map.of("one", 1)))
+                 */
+        );
+    }
+
     @Test
     void string_templates() {
         String name = "Roxy";
@@ -132,17 +143,6 @@ class Java21Tests {
         System.out.println(dogAsUsedToBe);
 
         Assertions.assertEquals(dog, dogAsUsedToBe);
-    }
-
-    static Stream<Arguments> provideSequencedMaps() {
-        return Stream.of(
-                Arguments.of(new LinkedHashMap<>(Map.of("one", 1)))
-                /*
-                These are also SequencedMap, but they do not support first/last entry modification
-                // Arguments.of(new ConcurrentSkipListMap<>(Map.of("one", 1))),
-                // Arguments.of(new TreeMap<>(Map.of("one", 1)))
-                 */
-        );
     }
 
     @Test
