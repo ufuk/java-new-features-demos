@@ -120,17 +120,17 @@ class Java21Tests {
     }
 
     @Test
-    void string_templates() {
+    void string_templates() { // preview in Java 21, released in Java ?
         String name = "Roxy";
         String breed = "Labrador";
         int age = 3;
 
         String dog = STR.
                 """
-                My dogs name is \{ name }, it is \{ age } years old \{ breed }.""";
+                My dog's name is \{ name }, it is \{ age } years old \{ breed }.""" ;
 
         String dogAsUsedToBe = new StringBuilder()
-                .append("My dogs name is ")
+                .append("My dog's name is ")
                 .append(name)
                 .append(", it is ")
                 .append(age)
