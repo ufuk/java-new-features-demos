@@ -5,6 +5,7 @@ import io.github.ufuk.java17.examples.Dog;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -81,14 +82,21 @@ class Java19Tests {
     void create_new_virtual_thread_per_task_instead_of_creating_a_pool_of_old_school_threads() throws InterruptedException { // preview in 19, released in Java 21
         ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
 
-        for (int i = 0; i < 10; i++) {
+        var threadCount = 250;
+        var setOfThreadIds = new HashSet<Long>();
+
+        for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
-                System.out.println("Am I a virtual thread? -> " + Thread.currentThread().isVirtual());
+
+                System.out.println("Am I a virtual thread? -> " + Thread.currentThread().isVirtual() + " " + Thread.currentThread().threadId());
+                setOfThreadIds.add(Thread.currentThread().threadId());
             });
         }
 
         executorService.shutdown();
         executorService.awaitTermination(10, TimeUnit.SECONDS);
+
+        Assertions.assertEquals(setOfThreadIds.size(), threadCount);
     }
 
     @Test

@@ -120,6 +120,32 @@ class Java21Tests {
     }
 
     @Test
+    void string_templates() {
+        String name = "Roxy";
+        String breed = "Labrador";
+        int age = 3;
+
+        String dog = STR.
+                """
+                My dogs name is \{ name }, it is \{ age } years old \{ breed }.""";
+
+        String dogAsUsedToBe = new StringBuilder()
+                .append("My dogs name is ")
+                .append(name)
+                .append(", it is ")
+                .append(age)
+                .append(" years old ")
+                .append(breed)
+                .append(".")
+                .toString();
+
+        System.out.println(dog);
+        System.out.println(dogAsUsedToBe);
+
+        Assertions.assertEquals(dog, dogAsUsedToBe);
+    }
+
+    @Test
     void todo() {
         Assertions.fail("No example presents"); // TODO: add example(s)
     }
