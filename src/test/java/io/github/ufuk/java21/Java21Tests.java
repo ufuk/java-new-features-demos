@@ -108,6 +108,32 @@ class Java21Tests {
         assertThat(sequencedMap.sequencedEntrySet()).hasSize(1).containsSequence(Map.entry("one", 1));
     }
 
+    @Test
+    void string_templates() {
+        String name = "Roxy";
+        String breed = "Labrador";
+        int age = 3;
+
+        String dog = STR.
+                """
+                My dogs name is \{ name }, it is \{ age } years old \{ breed }.""";
+
+        String dogAsUsedToBe = new StringBuilder()
+                .append("My dogs name is ")
+                .append(name)
+                .append(", it is ")
+                .append(age)
+                .append(" years old ")
+                .append(breed)
+                .append(".")
+                .toString();
+
+        System.out.println(dog);
+        System.out.println(dogAsUsedToBe);
+
+        Assertions.assertEquals(dog, dogAsUsedToBe);
+    }
+
     static Stream<Arguments> provideSequencedMaps() {
         return Stream.of(
                 Arguments.of(new LinkedHashMap<>(Map.of("one", 1)))
