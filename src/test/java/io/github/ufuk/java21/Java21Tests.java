@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -120,33 +121,106 @@ class Java21Tests {
     }
 
     @Test
+    void new_string_method_for_search_substring_in_range() {
+        String text = "My dog's name is Roxy, it is 3 years old Labrador. It is a very playful dog.";
+
+        int resultIndex = text.indexOf("is", 20, 30);
+
+        assertThat(resultIndex).isEqualTo(26);
+    }
+
+    @Test
+    void new_string_method_for_search_a_single_character_in_range() {
+        String text = "My dog's name is Roxy, it is 3 years old Labrador. It is a very playful dog.";
+
+        int resultIndex = text.indexOf('s', 20, 30);
+
+        assertThat(resultIndex).isEqualTo(27);
+    }
+
+    @Test
+    void repeat_method_for_string_builder_and_string_buffer() {
+        String text = new StringBuilder()
+                .append("I like to")
+                .repeat(" move it", 2)
+                .append("\n")
+                .append("Ya like to (move it!)")
+                .toString();
+
+        assertThat(text).isEqualTo("""
+                I like to move it move it
+                Ya like to (move it!)""");
+    }
+
+    @Test
+    void squeeze_values_between_two_values() {
+        int cannotLessThan5 = Math.clamp(4, 5, 10);
+        assertThat(cannotLessThan5).isEqualTo(5);
+
+        int cannotGreaterThan10 = Math.clamp(11, 5, 10);
+        assertThat(cannotGreaterThan10).isEqualTo(10);
+
+        int goodBoy = Math.clamp(6, 5, 10);
+        assertThat(goodBoy).isEqualTo(6);
+    }
+
+    @Test
     void string_templates() { // preview in Java 21, released in Java ?
         String name = "Roxy";
         String breed = "Labrador";
-        int age = 3;
+        int yearOfBirth = 2020;
 
-        String dog = STR.
-                """
-                My dog's name is \{ name }, it is \{ age } years old \{ breed }.""" ;
+        String dog = STR."My dog's name is \{name}, it is \{calculateAge(yearOfBirth)} years old \{breed}.";
 
         String dogAsUsedToBe = new StringBuilder()
                 .append("My dog's name is ")
                 .append(name)
                 .append(", it is ")
-                .append(age)
+                .append(calculateAge(yearOfBirth))
                 .append(" years old ")
                 .append(breed)
                 .append(".")
                 .toString();
 
-        System.out.println(dog);
-        System.out.println(dogAsUsedToBe);
+        assertThat("My dog's name is Roxy, it is " + calculateAge(yearOfBirth) + " years old Labrador.")
+                .isEqualTo(dog)
+                .isEqualTo(dogAsUsedToBe);
+    }
 
-        Assertions.assertEquals(dog, dogAsUsedToBe);
+    static int calculateAge(int yearOfBirth) {
+        return LocalDate.now().getYear() - yearOfBirth;
     }
 
     @Test
-    void todo() {
+    void use_scoped_values_instead_of_thread_local_in_virtual_threads() { // preview in Java 21, released in Java ?
+        Assertions.fail("No example presents"); // TODO: add example(s)
+    }
+
+    @Test
+    void structured_concurrency_as_a_part_of_project_loom() { // preview in Java 21, released in Java ?
+        Assertions.fail("No example presents"); // TODO: add example(s)
+    }
+
+    @Test
+    void unnamed_class_and_main_method() {
+        /*
+        Run command on terminal:
+        java --enable-preview --source 21 src/test/java/io/github/ufuk/java21/examples/SimplerMain.java
+
+        Expected output:
+        Note: src/test/java/io/github/ufuk/java21/examples/SimplerMain.java uses preview features of Java SE 21.
+        Note: Recompile with -Xlint:preview for details.
+        Bye-bye boilerplate!
+         */
+    }
+
+    @Test
+    void unnamed_variables() { // preview in Java 21, released in Java ?
+        Assertions.fail("No example presents"); // TODO: add example(s)
+    }
+
+    @Test
+    void unnamed_patterns() { // preview in Java 21, released in Java ?
         Assertions.fail("No example presents"); // TODO: add example(s)
     }
 
