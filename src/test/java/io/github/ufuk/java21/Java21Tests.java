@@ -202,7 +202,7 @@ class Java21Tests {
     }
 
     @Test
-    void unnamed_class_and_main_method() {
+    void unnamed_class_and_main_method() { // preview in Java 21, released in Java ?
         /*
         Run command on terminal:
         java --enable-preview --source 21 src/test/java/io/github/ufuk/java21/examples/SimplerMain.java
