@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -164,8 +163,9 @@ class Java21Tests {
         assertThat(goodBoy).isEqualTo(6);
     }
 
+    /* dropped in Java 23
     @Test
-    void string_templates() { // preview in Java 21, released in Java ?
+    void string_templates() { // preview in Java 21
         String name = "Roxy";
         String breed = "Labrador";
         int yearOfBirth = 2020;
@@ -190,6 +190,7 @@ class Java21Tests {
     static int calculateAge(int yearOfBirth) {
         return LocalDate.now().getYear() - yearOfBirth;
     }
+    */
 
     @Test
     void use_scoped_values_instead_of_thread_local_in_virtual_threads() { // preview in Java 21, released in Java ?

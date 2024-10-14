@@ -21,3 +21,4 @@ supplemented as needed.
 - [Java 20](src/test/java/io/github/ufuk/java20/Java20Tests.java)
 - [Java 21](src/test/java/io/github/ufuk/java21/Java21Tests.java)
 - [Java 22](src/test/java/io/github/ufuk/java22/Java22Tests.java)
+- [Java 23](src/test/java/io/github/ufuk/java23/Java23Tests.java)
