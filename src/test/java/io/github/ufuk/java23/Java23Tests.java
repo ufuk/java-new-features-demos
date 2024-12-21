@@ -14,7 +14,7 @@ class Java23Tests {
     void no_need_to_write_class_to_say_hello_even_we_can_skip_system_dot_out_now() { // preview in Java 21, still preview in Java 23, released in Java ?
         /*
         Run command on terminal:
-        java --enable-preview --source 23 src/test/java/io/github/ufuk/java23/examples/SimplerMain.java
+        java --enable-preview --source 23 src/test/java/io/github/ufuk/java23/examples/MoreSimplerMain.java
 
         Expected output:
         Bye-bye boilerplate!
