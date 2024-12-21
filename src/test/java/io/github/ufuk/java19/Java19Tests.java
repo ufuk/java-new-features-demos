@@ -99,9 +99,4 @@ class Java19Tests {
         Assertions.assertEquals(setOfThreadIds.size(), threadCount);
     }
 
-    @Test
-    void foreign_function_and_memory_api() { // preview in 19, released in Java ?
-        Assertions.fail("No example presents"); // TODO: add example(s)
-    }
-
 }

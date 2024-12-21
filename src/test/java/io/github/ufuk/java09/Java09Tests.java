@@ -87,26 +87,26 @@ class Java09Tests {
 
     @Test
     void publish_subscribe_framework() throws Exception {
-        // Create a publisher, which asynchronously sends submitted items to current subscribers until it is closed
+        // Creates a publisher, which asynchronously sends submitted items to current subscribers until it is closed
         SubmissionPublisher<Integer> publisher = new SubmissionPublisher<>();
 
-        // Create a subscriber
+        // Creates a subscriber
         Flow.Subscriber<Integer> subscriber1 = new IntegerSubscriber();
         Flow.Subscriber<Integer> subscriber2 = new IntegerSubscriber();
         Flow.Subscriber<Integer> subscriber3 = new IntegerSubscriber();
 
-        // Subscribe the subscriber to the publisher
+        // Subscribes the subscriber to the publisher
         publisher.subscribe(subscriber1);
         publisher.subscribe(subscriber2);
         publisher.subscribe(subscriber3);
 
-        // Publish items
+        // Publishes items
         int[] numbers = {1, 2, 3, 4, 5};
         for (int number : numbers) {
             publisher.submit(number);
         }
 
-        // Close the publisher
+        // Closes the publisher
         publisher.close();
     }
 

@@ -190,11 +190,11 @@ class Java07Tests {
             array[i] = i + 1;
         }
 
-        // Create ForkJoin pool and task
+        // Creates ForkJoin pool and task
         ForkJoinPool pool = new ForkJoinPool();
         ForkJoinArraySumTask task = new ForkJoinArraySumTask(10, array, 0, array.length);
 
-        // Start task
+        // Starts task
         int result = pool.invoke(task);
 
         assertThat(result).isEqualTo(5050);

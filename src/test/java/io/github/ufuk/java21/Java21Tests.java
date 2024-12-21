@@ -192,9 +192,46 @@ class Java21Tests {
     }
     */
 
+    // Defines a ScopedValue for username
+    static final ScopedValue<String> SV_USERNAME = ScopedValue.newInstance();
+
     @Test
-    void use_scoped_values_instead_of_thread_local_in_virtual_threads() { // preview in Java 21, released in Java ?
-        Assertions.fail("No example presents"); // TODO: add example(s)
+    void scoped_values() { // preview in Java 21, released in Java ?
+        // Binds a value to the SV_USERNAME within a scope
+        ScopedValue.where(SV_USERNAME, "user1").run(() -> {
+            // Accesses the value within the scope
+            String username = SV_USERNAME.get();
+            System.out.println("Username inside the scope: " + username);
+
+            printUsernameInsideTheScope();
+
+            // Nested scopes (shadowing) example
+            ScopedValue.where(SV_USERNAME, "user2").run(() -> {
+                System.out.println("Username in nested scope: " + SV_USERNAME.get());
+                printUsernameInsideTheScope();
+            });
+
+            System.out.println("Username after nested scope: " + SV_USERNAME.get());
+        });
+
+        // Attempting to access the scoped value outside the scope
+        try {
+            SV_USERNAME.get();
+        } catch (NoSuchElementException e) {
+            System.out.println("Failed to access!");
+        }
+
+        // Example of null value scope
+        ScopedValue.where(SV_USERNAME, null).run(() -> {
+            String username = SV_USERNAME.get();
+            System.out.println("Username inside the scope: " + username);
+        });
+    }
+
+    // Another method that accesses the same scoped value
+    void printUsernameInsideTheScope() {
+        String username = SV_USERNAME.get();
+        System.out.println("Username inside the scope (from another method): " + username);
     }
 
     @Test

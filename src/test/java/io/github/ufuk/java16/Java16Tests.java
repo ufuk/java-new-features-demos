@@ -33,6 +33,4 @@ class Java16Tests {
         );
     }
 
-    // TODO: add more examples on records with its final-release features
-
 }
