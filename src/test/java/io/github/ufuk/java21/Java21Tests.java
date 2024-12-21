@@ -1,6 +1,5 @@
 package io.github.ufuk.java21;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -8,6 +7,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.Executors;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.Stream;
 
@@ -367,13 +367,62 @@ class Java21Tests {
     }
 
     @Test
-    void unnamed_variables() { // preview in Java 21, released in Java 22
-        Assertions.fail("No example presents"); // TODO: add example(s)
+    void intentionally_ignored_variables_aka_unnamed_variables_as_lambda_parameters() { // preview in Java 21, released in Java 22
+        Stream.of(1, 2, 3)
+                .forEach(_ -> System.out.println("Hello")); // Says hello for 3 times, but there are better ways
     }
 
     @Test
-    void unnamed_patterns() { // preview in Java 21, released in Java 22
-        Assertions.fail("No example presents"); // TODO: add example(s)
+    void intentionally_ignored_variables_aka_unnamed_variables_as_ignored_caught_exceptions() { // preview in Java 21, released in Java 22
+        try {
+            throw new RuntimeException("Failed");
+        } catch (Exception _) { // Not recommended
+            System.out.println("Ignored");
+        }
+    }
+
+    @Test
+    void intentionally_ignored_variables_aka_unnamed_variables_as_auto_closeable_resources() { // preview in Java 21, released in Java 22
+        try (var _ = Executors.newVirtualThreadPerTaskExecutor()) { // Not recommended
+            System.out.println("What am I doing?");
+        }
+    }
+
+    @Test
+    void intentionally_ignored_variables_aka_unnamed_variables_with_switch_pattern_matching() { // preview in Java 21, released in Java 22
+        identifyObjectTypeUsingSwitch("A string");
+        identifyObjectTypeUsingSwitch(123);
+        identifyObjectTypeUsingSwitch(null);
+        identifyObjectTypeUsingSwitch(new ArrayList<>());
+    }
+
+    void identifyObjectTypeUsingSwitch(Object value) {
+        switch (value) {
+            case String _ -> System.out.println("It's a String");
+            case Integer _ -> System.out.println("It's an Integer");
+            case null -> System.out.println("It's null");
+            default -> System.out.println("It's something else");
+        }
+    }
+
+    @Test
+    void intentionally_ignored_variables_aka_unnamed_variables_with_instanceof_pattern_matching() { // preview in Java 21, released in Java 22
+        identifyObjectTypeUsingInstanceOf("A string");
+        identifyObjectTypeUsingInstanceOf(123);
+        identifyObjectTypeUsingInstanceOf(null);
+        identifyObjectTypeUsingInstanceOf(new ArrayList<>());
+    }
+
+    void identifyObjectTypeUsingInstanceOf(Object value) {
+        if (value instanceof String _) {
+            System.out.println("It's a String");
+        } else if (value instanceof Integer _) {
+            System.out.println("It's an Integer");
+        } else if (value == null) {
+            System.out.println("It's null");
+        } else {
+            System.out.println("It's something else");
+        }
     }
 
 }
