@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Further readings:
- * - ...
+ * - https://www.oracle.com/java/technologies/javase/22-relnote-issues.html
+ * - https://www.happycoders.eu/java/java-22-features/
  */
 class Java22Tests {
 

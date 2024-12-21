@@ -354,7 +354,7 @@ class Java21Tests {
     }
 
     @Test
-    void unnamed_class_and_main_method() { // preview in Java 21, released in Java ?
+    void no_need_to_write_class_to_say_hello() { // preview in Java 21, released in Java ?
         /*
         Run command on terminal:
         java --enable-preview --source 21 src/test/java/io/github/ufuk/java21/examples/SimplerMain.java
@@ -363,16 +363,16 @@ class Java21Tests {
         Note: src/test/java/io/github/ufuk/java21/examples/SimplerMain.java uses preview features of Java SE 21.
         Note: Recompile with -Xlint:preview for details.
         Bye-bye boilerplate!
-         */
+        */
     }
 
     @Test
-    void unnamed_variables() { // preview in Java 21, released in Java ?
+    void unnamed_variables() { // preview in Java 21, released in Java 22
         Assertions.fail("No example presents"); // TODO: add example(s)
     }
 
     @Test
-    void unnamed_patterns() { // preview in Java 21, released in Java ?
+    void unnamed_patterns() { // preview in Java 21, released in Java 22
         Assertions.fail("No example presents"); // TODO: add example(s)
     }
 
