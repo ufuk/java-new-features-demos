@@ -9,13 +9,13 @@ public class IntegerSubscriber implements Flow.Subscriber<Integer> {
     @Override
     public void onSubscribe(Flow.Subscription subscription) {
         this.subscription = subscription;
-        System.out.println("Subscribed! Thread name: " + Thread.currentThread().getName());
+        System.out.println("Subscribed! Thread: " + Thread.currentThread());
         subscription.request(1); // Request first item
     }
 
     @Override
     public void onNext(Integer item) {
-        System.out.println("Item '" + item + "' received by " + Thread.currentThread().getName());
+        System.out.println("Item '" + item + "' received by " + Thread.currentThread());
         // Do something
         subscription.request(1); // Request next item
     }
@@ -27,7 +27,7 @@ public class IntegerSubscriber implements Flow.Subscriber<Integer> {
 
     @Override
     public void onComplete() {
-        System.out.println("All items received by " + Thread.currentThread().getName());
+        System.out.println("All items received by " + Thread.currentThread());
     }
 
 }

@@ -21,7 +21,7 @@ public class ForkJoinArraySumTask extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        System.out.println("Thread name: " + Thread.currentThread().getName());
+        System.out.println("Thread: " + Thread.currentThread());
         if (endIndex - startIndex <= threshold) { // If task is fairly small, then compute
             int sum = 0;
             for (int i = startIndex; i < endIndex; i++) {

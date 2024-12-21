@@ -6,7 +6,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -235,8 +237,120 @@ class Java21Tests {
     }
 
     @Test
-    void structured_concurrency_as_a_part_of_project_loom() { // preview in Java 21, released in Java ?
-        Assertions.fail("No example presents"); // TODO: add example(s)
+    void structured_concurrency_when_all_tasks_successfully_completed() throws Exception { // preview in Java 21, released in Java ?
+        try (var structuredTaskScope = new StructuredTaskScope<String>()) {
+            var subTask1 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 1 started: " + Thread.currentThread()); // As you may have noticed from the outputs, these threads are "lightweight" virtual threads in a ForkJoinPool
+                Thread.sleep(Duration.ofSeconds(1));
+                System.out.println("Task 1 finished: " + Thread.currentThread());
+                return "Result 1";
+            });
+
+            var subTask2 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 2 started: " + Thread.currentThread());
+                Thread.sleep(Duration.ofSeconds(2));
+                System.out.println("Task 2 finished: " + Thread.currentThread());
+                return "Result 2";
+            });
+
+            // Waits for tasks to complete
+            structuredTaskScope.join();
+
+            // Gets results
+            System.out.println("Result of Task 1: " + subTask1.get());
+            System.out.println("Result of Task 2: " + subTask2.get());
+        }
+    }
+
+    @Test
+    void structured_concurrency_when_some_tasks_failed() throws Exception { // preview in Java 21, released in Java ?
+        try (var structuredTaskScope = new StructuredTaskScope<String>()) {
+            var subTask1 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 1 started: " + Thread.currentThread());
+                Thread.sleep(Duration.ofSeconds(1));
+                throw new RuntimeException("Task 1 failed!");
+                // return "Result 1";
+            });
+
+            var subTask2 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 2 started: " + Thread.currentThread());
+                Thread.sleep(Duration.ofSeconds(2));
+                System.out.println("Task 2 finished: " + Thread.currentThread());
+                return "Result 2";
+            });
+
+            // Waits for tasks to complete
+            structuredTaskScope.join();
+
+            // Attempts to get results
+            System.out.println("Result of Task 2: " + subTask2.get()); // This will get result even if Task 1 completed before Task 2
+            System.out.println("Result of Task 1: " + subTask1.get()); // This will throw IllegalStateException, because Task 1 failed
+        } catch (IllegalStateException e) {
+            System.out.println("Couldn't get result for Task 1: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void structured_concurrency_when_all_tasks_successfully_completed_but_shutdown_on_success() throws Exception { // preview in Java 21, released in Java ?
+        try (var structuredTaskScope = new StructuredTaskScope.ShutdownOnSuccess<String>()) {
+            var subTask1 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 1 started: " + Thread.currentThread());
+                Thread.sleep(Duration.ofSeconds(1));
+                System.out.println("Task 1 finished: " + Thread.currentThread());
+                return "Result 1";
+            });
+
+            var subTask2 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 2 started: " + Thread.currentThread());
+                Thread.sleep(Duration.ofSeconds(2));
+                System.out.println("Task 2 finished: " + Thread.currentThread());
+                return "Result 2";
+            });
+
+            // Waits for tasks to complete
+            structuredTaskScope.join();
+
+            // Attempts to get results
+            System.out.println("Result of Task 1: " + subTask1.get());
+            System.out.println("Result of Task 2: " + subTask2.get()); // This will throw IllegalStateException, because Task 1 completed before Task 2
+        } catch (IllegalStateException e) {
+            System.out.println("Couldn't get result for Task 2: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void structured_concurrency_when_some_tasks_failed_but_shutdown_on_failure() throws Exception { // preview in Java 21, released in Java ?
+        try (var structuredTaskScope = new StructuredTaskScope.ShutdownOnFailure()) {
+            var subTask0 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 0 started: " + Thread.currentThread());
+                System.out.println("Task 0 finished: " + Thread.currentThread());
+                return "Result 0";
+            });
+
+            var subTask1 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 1 started: " + Thread.currentThread());
+                Thread.sleep(Duration.ofSeconds(2));
+                System.out.println("Task 1 finished: " + Thread.currentThread());
+                return "Result 1";
+            });
+
+            var subTask2 = structuredTaskScope.fork(() -> {
+                System.out.println("Task 2 started: " + Thread.currentThread());
+                Thread.sleep(Duration.ofSeconds(1));
+                throw new RuntimeException("Task 2 failed!");
+                // return "Result 2";
+            });
+
+            // Waits for tasks to complete
+            structuredTaskScope.join();
+
+            // Attempts to get results
+            System.out.println("Result of Task 0: " + subTask0.get()); // This will get result
+            System.out.println("Result of Task 1: " + subTask1.get()); // This will throw IllegalStateException, because Task 2 failed before Task 1 is completed
+            // System.out.println("Result of Task 2: " + subTask2.get());
+        } catch (IllegalStateException e) {
+            System.out.println("Couldn't get results of Task 1 and Task 2: " + e.getMessage());
+        }
     }
 
     @Test
