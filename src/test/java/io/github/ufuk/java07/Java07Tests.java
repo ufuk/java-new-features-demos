@@ -1,6 +1,6 @@
 package io.github.ufuk.java07;
 
-import org.junit.jupiter.api.Assertions;
+import io.github.ufuk.java07.examples.ForkJoinArraySumTask;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -10,6 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Further readings:
@@ -180,8 +183,21 @@ class Java07Tests {
     }
 
     @Test
-    void fork_join_framework() {
-        Assertions.fail("No example presents"); // TODO: add example(s)
+    void divide_a_big_task_into_smaller_tasks_then_conquer_with_fork_join_framework() {
+        // An array which contains numbers from 1 to 100
+        int[] array = new int[100];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = i + 1;
+        }
+
+        // Create ForkJoin pool and task
+        ForkJoinPool pool = new ForkJoinPool();
+        ForkJoinArraySumTask task = new ForkJoinArraySumTask(10, array, 0, array.length);
+
+        // Start task
+        int result = pool.invoke(task);
+
+        assertThat(result).isEqualTo(5050);
     }
 
 }
