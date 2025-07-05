@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
  * Further readings:
  * - https://www.oracle.com/java/technologies/javase/23-relnote-issues.html
  * - https://www.happycoders.eu/java/java-23-features/
+ * - https://www.youtube.com/watch?v=IluRn8ecuCo (Reviewing the JDK 23 Release Notes - Inside Java Newscast #76)
  */
 class Java23Tests {
 

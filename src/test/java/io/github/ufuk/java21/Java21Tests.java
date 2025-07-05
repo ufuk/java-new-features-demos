@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Further readings:
  * - https://www.oracle.com/java/technologies/javase/21-relnote-issues.html
  * - https://www.happycoders.eu/java/java-21-features/
+ * - https://www.youtube.com/watch?v=h13oIb9L1Fw (JDK 21 Release Notes - Inside Java Newscast #55)
  */
 class Java21Tests {
 

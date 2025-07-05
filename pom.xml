@@ -11,13 +11,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
-        <java.version>23</java.version>
+        <maven.compiler.source>24</maven.compiler.source>
+        <maven.compiler.target>24</maven.compiler.target>
+        <java.version>24</java.version>
 
-        <junit-5.version>5.11.2</junit-5.version>
-        <mockito.version>5.14.1</mockito.version>
-        <assertj.version>3.26.3</assertj.version>
+        <junit-5.version>5.13.3</junit-5.version>
+        <mockito.version>5.18.0</mockito.version>
+        <assertj.version>3.27.3</assertj.version>
         <apache-commons-lang.version>3.17.0</apache-commons-lang.version>
     </properties>
 
