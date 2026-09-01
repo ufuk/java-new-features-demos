@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -23,12 +26,11 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Further readings:
- * - https://www.baeldung.com/java-8-new-features
- * - https://www.baeldung.com/java-8-lambda-expressions-tips
- * - https://www.baeldung.com/java-8-streams-introduction
- */
+/// Further readings:
+/// - [JDK 8 Release Notes](https://www.oracle.com/java/technologies/javase/8all-relnotes.html)
+/// - [New Features in Java 8](https://www.baeldung.com/java-8-new-features)
+/// - [Lambda Expressions and Functional Interfaces Tips](https://www.baeldung.com/java-8-lambda-expressions-tips)
+/// - [Introduction to Java 8 Streams](https://www.baeldung.com/java-8-streams-introduction)
 class Java08Tests {
 
     @Test
@@ -360,6 +362,37 @@ class Java08Tests {
 
         LocalDateTime dateTime = LocalDateTime.parse("21-12-2024 17:47", formatter);
         System.out.println("Parsed date: " + dateTime);
+    }
+
+    @Test
+    void string_join_utility_method() {
+        String csv = String.join(", ", "Apple", "Banana", "Cherry");
+        assertThat(csv).isEqualTo("Apple, Banana, Cherry");
+
+        List<String> list = Arrays.asList("Java", "8", "Lambdas");
+        String path = String.join("/", list);
+        assertThat(path).isEqualTo("Java/8/Lambdas");
+    }
+
+    @Test
+    void completable_future_supply_async_pipeline() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> pipeline = CompletableFuture.supplyAsync(() -> "Hello")
+                .thenApply(greeting -> greeting + " World")
+                .thenApply(String::toUpperCase);
+
+        String result = pipeline.get();
+        assertThat(result).isEqualTo("HELLO WORLD");
+    }
+
+    @Test
+    void completable_future_run_async_pipeline() throws ExecutionException, InterruptedException {
+        AtomicBoolean taskExecuted = new AtomicBoolean(false);
+
+        CompletableFuture<Void> pipeline = CompletableFuture.runAsync(() -> taskExecuted.set(true))
+                .thenRun(() -> System.out.println("Asynchronous task completed"));
+
+        pipeline.get();
+        assertThat(taskExecuted.get()).isTrue();
     }
 
 }

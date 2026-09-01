@@ -2,14 +2,15 @@ package io.github.ufuk.java13;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Further readings:
- * - https://www.baeldung.com/java-13-new-features
- */
+import static org.assertj.core.api.Assertions.assertThat;
+
+/// Further readings:
+/// - [JDK 13 Release Notes](https://www.oracle.com/java/technologies/javase/13all-relnotes.html)
+/// - [New Features in Java 13](https://www.baeldung.com/java-13-new-features)
 class Java13Tests {
 
     @Test
-    void what_if_we_want_do_something_then_return_value_in_switch_expressions_the_answer_is_yield() {
+    void what_if_we_want_do_something_then_return_value_in_switch_expressions_the_answer_is_yield() { // preview in Java 13, released in Java 14
         String question = "the meaning of life, the universe, and everything";
 
         String answer = switch (question) {
@@ -26,14 +27,13 @@ class Java13Tests {
         };
 
         System.out.println(answer);
+        assertThat(answer).isEqualTo("42");
     }
 
     @Test
-    void readable_multiline_text_with_text_blocks() { // previewed in Java 13, released in Java 15
+    void readable_multiline_text_with_text_blocks() { // preview in Java 13, released in Java 15
         // before
-        String oldJsonString = "{\"key\":\"value\"}";
-
-        System.out.println(oldJsonString);
+        String oldJsonString = "{\n    \"key\": \"value\"\n}\n";
 
         // after
         String textBlockJsonString = """
@@ -43,6 +43,7 @@ class Java13Tests {
                 """;
 
         System.out.println(textBlockJsonString);
+        assertThat(textBlockJsonString).isEqualTo(oldJsonString);
     }
 
 }

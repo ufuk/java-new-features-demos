@@ -8,10 +8,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Further readings:
- * - https://www.baeldung.com/java-16-new-features
- */
+/// Further readings:
+/// - [JDK 16 Release Notes](https://www.oracle.com/java/technologies/javase/16all-relnotes.html)
+/// - [New Features in Java 16](https://www.baeldung.com/java-16-new-features)
 class Java16Tests {
 
     @Test

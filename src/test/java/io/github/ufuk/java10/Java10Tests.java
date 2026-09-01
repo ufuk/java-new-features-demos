@@ -8,12 +8,11 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Further readings:
- * - https://www.baeldung.com/java-10-overview
- * - https://www.baeldung.com/java-10-local-variable-type-inference
- * - https://www.baeldung.com/java-10-performance-improvements
- */
+/// Further readings:
+/// - [JDK 10 Release Notes](https://www.oracle.com/java/technologies/javase/10all-relnotes.html)
+/// - [Java 10 Overview](https://www.baeldung.com/java-10-overview)
+/// - [Local-Variable Type Inference](https://www.baeldung.com/java-10-local-variable-type-inference)
+/// - [Java 10 Performance Improvements](https://www.baeldung.com/java-10-performance-improvements)
 class Java10Tests {
 
     @Test
@@ -53,6 +52,7 @@ class Java10Tests {
         aModifiableList.add("2");
         aModifiableList.add("3");
 
+        // Collectors.toUnmodifiableList() was superseded by the shorter Stream.toList() in Java 16
         List<String> anImmutableList = aModifiableList.stream()
                 .filter(StringUtils::isNumeric)
                 .collect(Collectors.toUnmodifiableList());

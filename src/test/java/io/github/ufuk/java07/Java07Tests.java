@@ -3,7 +3,9 @@ package io.github.ufuk.java07;
 import io.github.ufuk.java07.examples.ForkJoinArraySumTask;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
@@ -14,10 +16,9 @@ import java.util.concurrent.ForkJoinPool;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Further readings:
- * - https://howtodoinjava.com/java7/java-7-changes-features-and-enhancements
- */
+/// Further readings:
+/// - [JDK 7 Release Notes](https://www.oracle.com/java/technologies/javase/javase-jdk7-relnotes.html)
+/// - [Java 7 Features and Changes](https://howtodoinjava.com/series/java-versions-features/#java-se-7-features)
 class Java07Tests {
 
     @Test
@@ -33,7 +34,7 @@ class Java07Tests {
     void before_try_with_resources() {
         InputStream inputStream = null;
         try {
-            inputStream = getClass().getClassLoader().getResourceAsStream("test1.txt");
+            inputStream = getClass().getClassLoader().getResourceAsStream("sample-input.txt");
 
             // InputStream.readAllBytes exists since Java 9
             String fileContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
@@ -54,7 +55,7 @@ class Java07Tests {
 
     @Test
     void after_try_with_resources() {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("test1.txt")) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("sample-input.txt")) {
             String fileContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
             System.out.println(fileContent);
@@ -64,90 +65,97 @@ class Java07Tests {
     }
 
     @Test
-    void after_try_with_resources_with_1_input_1_output_resource() {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("test1.txt");
-             OutputStream outputStream = new FileOutputStream("src/test/resources/test2.txt")) {
-            String fileContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+    void after_try_with_resources_with_1_input_1_output_resource() throws IOException {
+        Path tempOutputFile = Files.createTempFile("output-", ".txt");
 
-            System.out.println(fileContent);
+        // Reads from the static input file and writes a transformed version to a temp output file —
+        // both streams managed by a single try-with-resources block.
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("sample-input.txt");
+             OutputStream outputStream = Files.newOutputStream(tempOutputFile)) {
+            String inputContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            String outputContent = inputContent.replace("Input", "Output");
 
-            outputStream.write(fileContent.replace('1', '2').getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            e.printStackTrace();
+            outputStream.write(outputContent.getBytes(StandardCharsets.UTF_8));
         }
+
+        String written = new String(Files.readAllBytes(tempOutputFile), StandardCharsets.UTF_8);
+        assertThat(written).isEqualTo("Hello from Output File!\n");
+
+        System.out.println("Output written to: " + tempOutputFile.toAbsolutePath());
     }
 
     @Test
-    void after_try_with_resources_with_2_input_resources() {
-        try (InputStream inputStream1 = getClass().getClassLoader().getResourceAsStream("test1.txt");
-             InputStream inputStream2 = getClass().getClassLoader().getResourceAsStream("test2.txt")) {
-            String fileContent1 = new String(inputStream1.readAllBytes(), StandardCharsets.UTF_8);
-            System.out.println(fileContent1);
-
-            String fileContent2 = new String(inputStream2.readAllBytes(), StandardCharsets.UTF_8);
-            System.out.println(fileContent2);
-        } catch (IOException e) {
-            e.printStackTrace();
+    void after_try_with_resources_with_2_input_resources() throws IOException {
+        // Write a derived file first so we have two distinct input sources to read simultaneously
+        Path tempDerivedFile = Files.createTempFile("derived-", ".txt");
+        try (InputStream source = getClass().getClassLoader().getResourceAsStream("sample-input.txt")) {
+            String content = new String(source.readAllBytes(), StandardCharsets.UTF_8);
+            Files.write(tempDerivedFile, content.replace("Input", "Derived").getBytes(StandardCharsets.UTF_8));
         }
+
+        // Both resources opened and closed safely within a single try-with-resources
+        try (InputStream original = getClass().getClassLoader().getResourceAsStream("sample-input.txt");
+             InputStream derived = Files.newInputStream(tempDerivedFile)) {
+            String originalContent = new String(original.readAllBytes(), StandardCharsets.UTF_8);
+            System.out.println("Original: " + originalContent.trim());
+
+            String derivedContent = new String(derived.readAllBytes(), StandardCharsets.UTF_8);
+            System.out.println("Derived:  " + derivedContent.trim());
+
+            assertThat(derivedContent).isEqualTo(originalContent.replace("Input", "Derived"));
+        }
+
+        System.out.println("Derived file created at: " + tempDerivedFile.toAbsolutePath());
     }
 
     @Test
     void file_operations_with_nio() throws IOException {
-        Path pathTestFile3 = Paths.get("src/test/resources/test3.txt");
-        Path pathTestFile4 = Paths.get("src/test/resources/test4.txt");
+        Path tempFile1 = Files.createTempFile("nio-file-1-", ".txt");
+        Path tempFile2 = Files.createTempFile("nio-file-2-", ".txt");
 
-        // deletes files
-        Files.deleteIfExists(pathTestFile3);
-        Files.deleteIfExists(pathTestFile4);
-
-        // creates new file
-        Files.createFile(pathTestFile3);
-
-        // creates new temp file
-        Path tempFile = Files.createTempFile("prefix", "suffix");
-
-        // writes absolute path
-        System.out.println(pathTestFile3.toAbsolutePath());
+        // writes content using pre-Java-11 NIO (Files.write with byte array)
+        Files.write(tempFile1, "Hello NIO.2".getBytes(StandardCharsets.UTF_8));
 
         // copies a file
-        Files.copy(Paths.get("src/test/resources/test2.txt"), pathTestFile4);
+        Files.copy(tempFile1, tempFile2, StandardCopyOption.REPLACE_EXISTING);
 
         // checks file attributes
-        System.out.println("Is regular file: " + Files.isRegularFile(pathTestFile3));
-        System.out.println("Is directory file: " + Files.isDirectory(pathTestFile3));
-        System.out.println("Size (byte): " + Files.size(pathTestFile4));
-        System.out.println("Is regular file: " + Files.isRegularFile(Paths.get("src/test/resources/")));
-        System.out.println("Is directory file: " + Files.isDirectory(Paths.get("src/test/resources/")));
+        System.out.println("Temp file 1 created: " + tempFile1.toAbsolutePath());
+        System.out.println("Temp file 2 (copy) created: " + tempFile2.toAbsolutePath());
+        System.out.println("Is regular file: " + Files.isRegularFile(tempFile1));
+        System.out.println("Is directory: " + Files.isDirectory(tempFile1));
+        System.out.println("Size (byte): " + Files.size(tempFile2));
 
-        // deletes files
-        Files.delete(pathTestFile3);
-        Files.delete(pathTestFile4);
+        assertThat(Files.isRegularFile(tempFile1)).isTrue();
+        assertThat(Files.size(tempFile2)).isGreaterThan(0);
     }
 
     @Test
-    void read_large_files_with_nio_channel() {
-        try (RandomAccessFile aFile = new RandomAccessFile("src/test/resources/test1.txt", "r");
-             FileChannel channel = aFile.getChannel()) {
+    void read_large_files_with_nio_channel() throws IOException {
+        Path tempInputFile = Files.createTempFile("channel-read-", ".txt");
+        Files.write(tempInputFile, "NIO Channel Buffer Read".getBytes(StandardCharsets.UTF_8));
+
+        try (FileChannel channel = FileChannel.open(tempInputFile, StandardOpenOption.READ)) {
             ByteBuffer buffer = ByteBuffer.allocate(1024);
 
             while (channel.read(buffer) > 0) {
                 buffer.flip();
                 for (int i = 0; i < buffer.limit(); i++) {
                     char readChar = (char) buffer.get();
-
                     System.out.print(readChar);
                 }
                 buffer.clear();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println();
         }
+
+        System.out.println("Channel read from temp file: " + tempInputFile.toAbsolutePath());
     }
 
     @Test
     void catch_multiple_exceptions_at_once() {
         try {
-            Files.delete(Paths.get("src/test/resources/test5.txt"));
+            Files.delete(Paths.get("/non-existent-directory/test-missing.txt"));
         } catch (NoSuchFileException | DirectoryNotEmptyException e) {
             System.out.println("No file, or not empty directory");
             e.printStackTrace();
@@ -164,22 +172,27 @@ class Java07Tests {
 
         // after
         int glad = 1_000_000;
+
+        assertThat(glad).isEqualTo(mad);
     }
 
     @Test
     void switch_statements_by_string() {
         String answer = "Yes";
+        String status;
 
         switch (answer) {
             case "Yes":
-                System.out.println("Accepted");
+                status = "Accepted";
                 break;
             case "No":
-                System.out.println("Declined");
+                status = "Declined";
                 break;
             default:
-                System.out.println("Please answer");
+                status = "Please answer";
         }
+
+        assertThat(status).isEqualTo("Accepted");
     }
 
     @Test

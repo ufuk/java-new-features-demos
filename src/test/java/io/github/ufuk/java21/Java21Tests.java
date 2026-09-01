@@ -5,20 +5,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Further readings:
- * - https://www.oracle.com/java/technologies/javase/21-relnote-issues.html
- * - https://www.happycoders.eu/java/java-21-features/
- * - https://www.youtube.com/watch?v=h13oIb9L1Fw (JDK 21 Release Notes - Inside Java Newscast #55)
- */
+/// Further readings:
+/// - [JDK 21 Release Notes](https://www.oracle.com/java/technologies/javase/21all-relnotes.html)
+/// - [Java 21 Features (with Examples)](https://www.happycoders.eu/java/java-21-features/)
+/// - [New Features in Java 21 LTS](https://www.baeldung.com/java-lts-21-new-features)
+/// - [JDK 21 Release Notes - Inside Java Newscast #55](https://www.youtube.com/watch?v=h13oIb9L1Fw)
 class Java21Tests {
 
     @ParameterizedTest
@@ -166,9 +163,14 @@ class Java21Tests {
         assertThat(goodBoy).isEqualTo(6);
     }
 
-    /* dropped in Java 23
+    /*
+    String Templates was introduced as a preview in Java 21 (JEP 430) and continued in Java 22 (JEP 459).
+    It introduced template processors (e.g. `STR."Hello \{name}"`) for safe string interpolation and DSL construction.
+    However, the feature was withdrawn/dropped in Java 23 to undergo a fundamental redesign by the language team.
+    The test below is commented out to allow the project to compile seamlessly against Java 23+ compilers.
+
     @Test
-    void string_templates() { // preview in Java 21
+    void string_templates() { // preview in Java 21 (JEP 430), preview in Java 22 (JEP 459), dropped in Java 23
         String name = "Roxy";
         String breed = "Labrador";
         int yearOfBirth = 2020;
@@ -199,7 +201,7 @@ class Java21Tests {
     static final ScopedValue<String> SV_USERNAME = ScopedValue.newInstance();
 
     @Test
-    void scoped_values() { // preview in Java 21, released in Java ?
+    void scoped_values() { // preview in Java 21, released in Java 25
         // Binds a value to the SV_USERNAME within a scope
         ScopedValue.where(SV_USERNAME, "user1").run(() -> {
             // Accesses the value within the scope
@@ -237,8 +239,15 @@ class Java21Tests {
         System.out.println("Username inside the scope (from another method): " + username);
     }
 
+    /*
+    Structured Concurrency was introduced as a preview in Java 21 (JEP 453).
+    Its API evolved in Java 25 (JEP 505 - StructuredTaskScope.open and Joiner) and remains in preview in Java 26.
+    The original Java 21 preview constructor `new StructuredTaskScope<>()` was removed in modern JDKs,
+    so the initial preview tests below are commented out to maintain compilation against current compilers.
+    For the updated Structured Concurrency examples, see Java25Tests#structured_concurrency_* and Java26Tests#structured_concurrency_*.
+
     @Test
-    void structured_concurrency_when_all_tasks_successfully_completed() throws Exception { // preview in Java 21, released in Java ?
+    void structured_concurrency_when_all_tasks_successfully_completed() throws Exception { // preview in Java 21, changed in Java 25, released in Java ?
         try (var structuredTaskScope = new StructuredTaskScope<String>()) {
             var subTask1 = structuredTaskScope.fork(() -> {
                 System.out.println("Task 1 started: " + Thread.currentThread()); // As you may have noticed from the outputs, these threads are "lightweight" virtual threads in a ForkJoinPool
@@ -264,7 +273,7 @@ class Java21Tests {
     }
 
     @Test
-    void structured_concurrency_when_some_tasks_failed() throws Exception { // preview in Java 21, released in Java ?
+    void structured_concurrency_when_some_tasks_failed() throws Exception { // preview in Java 21, changed in Java 25, released in Java ?
         try (var structuredTaskScope = new StructuredTaskScope<String>()) {
             var subTask1 = structuredTaskScope.fork(() -> {
                 System.out.println("Task 1 started: " + Thread.currentThread());
@@ -292,7 +301,7 @@ class Java21Tests {
     }
 
     @Test
-    void structured_concurrency_when_all_tasks_successfully_completed_but_shutdown_on_success() throws Exception { // preview in Java 21, released in Java ?
+    void structured_concurrency_when_all_tasks_successfully_completed_but_shutdown_on_success() throws Exception { // preview in Java 21, changed in Java 25, released in Java ?
         try (var structuredTaskScope = new StructuredTaskScope.ShutdownOnSuccess<String>()) {
             var subTask1 = structuredTaskScope.fork(() -> {
                 System.out.println("Task 1 started: " + Thread.currentThread());
@@ -320,7 +329,7 @@ class Java21Tests {
     }
 
     @Test
-    void structured_concurrency_when_some_tasks_failed_but_shutdown_on_failure() throws Exception { // preview in Java 21, released in Java ?
+    void structured_concurrency_when_some_tasks_failed_but_shutdown_on_failure() throws Exception { // preview in Java 21, changed in Java 25, released in Java ?
         try (var structuredTaskScope = new StructuredTaskScope.ShutdownOnFailure()) {
             var subTask0 = structuredTaskScope.fork(() -> {
                 System.out.println("Task 0 started: " + Thread.currentThread());
@@ -353,9 +362,10 @@ class Java21Tests {
             System.out.println("Couldn't get results of Task 1 and Task 2: " + e.getMessage());
         }
     }
+    */
 
     @Test
-    void no_need_to_write_class_to_say_hello() { // preview in Java 21, released in Java ?
+    void no_need_to_write_class_to_say_hello() { // preview in Java 21, released in Java 25
         /*
         Run command on terminal:
         java --enable-preview --source 21 src/test/java/io/github/ufuk/java21/examples/SimplerMain.java

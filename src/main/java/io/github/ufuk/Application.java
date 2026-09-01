@@ -2,7 +2,7 @@ package io.github.ufuk;
 
 public class Application {
 
-    public static void main(String[] args) {
+    static void main() {
         System.out.println("Hello new Java features!");
     }
 

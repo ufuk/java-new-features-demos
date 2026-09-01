@@ -10,7 +10,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -19,10 +18,9 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Further readings:
- * - https://www.baeldung.com/java-11-new-features
- */
+/// Further readings:
+/// - [JDK 11 Release Notes](https://www.oracle.com/java/technologies/javase/11all-relnotes.html)
+/// - [New Features in Java 11](https://www.baeldung.com/java-11-new-features)
 class Java11Tests {
 
     @Test
@@ -30,10 +28,12 @@ class Java11Tests {
         HttpClient httpClient = HttpClient.newBuilder().build();
 
         HttpRequest httpRequest = HttpRequest.newBuilder().GET()
-                .uri(new URI("https://postman-echo.com/get"))
+                .uri(new URI("https://api.github.com"))
                 .build();
 
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println(httpResponse.body());
 
         assertThat(httpResponse.body()).isNotBlank();
     }
@@ -81,15 +81,18 @@ class Java11Tests {
 
     @Test
     void write_and_read_strings_with_new_nio_utility_methods() throws IOException {
-        Path pathToTestFile2 = Paths.get("src/test/resources/test2.txt");
+        Path tempFile = Files.createTempFile("java11-demo-", ".txt");
 
-        // writeString to file
-        Files.writeString(pathToTestFile2, "Hello Test 2 from Java 11)");
+        // before (Java 7 NIO way)
+        // Files.write(path, "content".getBytes(StandardCharsets.UTF_8));
+        // String content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
 
-        // readString from file
-        String testFile2Content = Files.readString(pathToTestFile2);
+        // after - no more charset boilerplate
+        Files.writeString(tempFile, "Hello from Java 11");
+        String content = Files.readString(tempFile);
 
-        System.out.println(testFile2Content);
+        assertThat(content).isEqualTo("Hello from Java 11");
+        System.out.println("Written and read from: " + tempFile.toAbsolutePath());
     }
 
     @Test
