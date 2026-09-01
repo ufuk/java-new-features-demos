@@ -100,6 +100,33 @@ class Java25Tests {
     }
     */
 
+    /*
+    Stable Values (JEP 502) was introduced as a preview in Java 25.
+    In Java 26 (JEP 526), it underwent a major API redesign and was renamed to LazyConstant
+    (low-level mutation methods like orElseSet/setOrThrow were removed in favor of factory methods).
+    The original Java 25 `StableValue` class was replaced in modern JDKs, so the test below
+    is commented out to ensure compilation against current compilers.
+    For the updated Lazy Constants examples, see Java26Tests#lazy_constants_deferred_initialization_with_constant_folding.
+
+    private static final StableValue<String> CONFIG = StableValue.of();
+    private static final Supplier<String> DB_URL = StableValue.supplier(() -> "jdbc:postgresql://localhost:5432/mydb");
+
+    @Test
+    void stable_values_for_deferred_immutability() { // preview in Java 25, changed in Java 26, released in Java ?
+        // StableValue allowed deferred initialization on static final fields with JVM constant-folding optimizations.
+        // In Java 25 (JEP 502), two primary patterns existed:
+        // 1. Direct holder using orElseSet() and orElseThrow() (there was no .get() on StableValue):
+        String value = CONFIG.orElseSet(() -> "https://api.example.com");
+        System.out.println("Config value: " + value);
+        assertThat(CONFIG.orElseThrow()).isEqualTo("https://api.example.com");
+
+        // 2. Stable supplier factory using StableValue.supplier(...) which returns a standard Supplier with memoized constant-folding:
+        String url = DB_URL.get();
+        System.out.println("DB URL: " + url);
+        assertThat(url).isEqualTo("jdbc:postgresql://localhost:5432/mydb");
+    }
+    */
+
     @Test
     void structured_concurrency_when_any_task_fails_shuts_down_others() throws Exception { // preview in Java 21, changed in Java 25, released in Java ?
         // Java 25 equivalent of Java21Tests#structured_concurrency_when_some_tasks_failed_but_shutdown_on_failure
