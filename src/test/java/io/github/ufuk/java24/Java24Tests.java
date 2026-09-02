@@ -22,27 +22,44 @@ class Java24Tests {
     private final Object sharedLock = new Object();
 
     @Test
-    void virtual_threads_no_longer_pin_carrier_threads_inside_synchronized_blocks() throws InterruptedException { // released in Java 24
-        // In Java 21 to 23, blocking I/O or sleep inside `synchronized` blocks caused Virtual Threads
-        // to "pin" the underlying platform (carrier) thread.
-        // JEP 491 in Java 24 completely resolves this by making `synchronized` fully cooperative with Virtual Threads.
-        List<String> completedTasks = Collections.synchronizedList(new ArrayList<>());
+    void virtual_threads_no_longer_pin_carrier_threads_inside_synchronized_blocks() throws Exception { // released in Java 24
+        /*
+        Historical Problem (Java 21 to 23):
+        ------------------------------------
+        When a virtual thread blocked on I/O or sleep inside a `synchronized` block/method,
+        it "pinned" its underlying carrier (platform) thread in the ForkJoinPool.
+        Because the carrier thread could not be unmounted:
+        1. Carrier pool threads were easily exhausted by a few blocking synchronized calls.
+        2. Other virtual threads were starved and unable to execute.
+        3. Developers had to refactor synchronized code to `java.util.concurrent.locks.ReentrantLock`.
+
+        Solution in Java 24 (JEP 491):
+        -------------------------------
+        The JVM's monitor implementation was re-engineered so virtual threads unmount cleanly
+        even when blocking inside `synchronized` blocks or methods. Legacy synchronized code
+        and third-party libraries now scale effortlessly on virtual threads without pinning.
+        */
+
+        int taskCount = 10;
+        List<String> results = Collections.synchronizedList(new ArrayList<>());
 
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= taskCount; i++) {
                 final int taskId = i;
                 executor.submit(() -> {
+                    // In Java 21-23, entering `synchronized` and sleeping would pin the carrier thread.
+                    // In Java 24, the virtual thread unmounts cleanly during sleep, allowing carrier threads to run other tasks.
                     synchronized (sharedLock) {
-                        // Virtual thread can yield and unmount cleanly inside synchronized blocks in Java 24
-                        Thread.sleep(Duration.ofMillis(50));
-                        completedTasks.add("Task-" + taskId);
+                        System.out.println("Task " + taskId + " running inside synchronized on " + Thread.currentThread());
+                        Thread.sleep(Duration.ofMillis(30));
+                        results.add("Task-" + taskId);
                     }
                     return null;
                 });
             }
-        } // Wait for all virtual threads to complete
+        } // Awaits completion of all virtual threads
 
-        assertThat(completedTasks).hasSize(5);
+        assertThat(results).hasSize(taskCount);
     }
 
     @Test
